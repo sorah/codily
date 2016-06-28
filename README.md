@@ -1,20 +1,13 @@
-# Codily
+# Codily: Codificate your Fastly configuration
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/codily`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+__still not working, this is in active development phase__
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
 ```ruby
+# Gemfile
 gem 'codily'
 ```
-
-And then execute:
-
-    $ bundle
 
 Or install it yourself as:
 
@@ -22,7 +15,151 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+planning
+
+``` ruby
+service "test.example.com" do
+  backend "name" do
+    address
+    auto_loadbalance
+    between_bytes_timeout
+    client_cert
+    comment
+    connect_timeout
+    error_threshold
+    first_byte_timeout
+    healthcheck
+    hostname
+    ipv4
+    ipv6
+    locked
+    max_conn
+    max_tls_version
+    min_tls_version
+    port
+    request_condition
+    service_id
+    shield
+    ssl_ca_cert
+    ssl_cert_hostname
+    ssl_check_cert
+    ssl_ciphers
+    ssl_client_cert
+    ssl_client_key
+    ssl_hostname
+    ssl_sni_hostname
+    use_ssl
+    weight
+  end
+
+  cache_setting "name" do
+    action
+    stale_ttl
+    ttl
+
+    cache_condition "name"
+    # cache_condition do
+    #   comment
+    #   priority
+    #   statement
+    # end
+  end
+
+  condition "name" do
+    comment
+    priority
+    statement
+  end
+
+  dictionary "name"
+
+  director "name" do
+    type
+    retries
+    quorum
+    comment
+
+    backend "name"
+    backend "name"
+    backend "name"
+  end
+
+  domain "a.example.org"
+  domain "a.example.org" do
+    comment ""
+  end
+
+  gzip "name" do
+    content_types %w(text/html)
+    extensions %w(html)
+    cache_condition "name"
+    # cache_condition do
+    #   comment
+    #   priority
+    #   statement
+    # end
+  end
+
+  header 'name' do
+    action
+    src
+    dst
+    ignore_if_set
+    priority
+    substitution
+    type
+    cache_condition
+    request_condition
+    response_condition
+  end
+
+  healthcheck 'name' do
+    check_interval
+    comment
+    expected_response
+    host
+    http_version
+    initial
+    method
+    path
+    threshold
+    timeout
+    window
+  end
+
+  request_setting "name" do
+    action
+    bypass_busy_wait
+    default_host
+    force_miss
+    force_ssl
+    geo_headers
+    hash_keys
+    max_stale_age
+    timer_support
+    xff
+    request_condition
+  end
+
+  response_object "name" do
+    content
+    content_type
+    status
+    response
+    cache_condtiion
+    request_condition
+  end
+
+  vcl "name" do
+    content file: 'xxx'
+    main true
+  end
+
+  settings(
+    "general.default_ttl" => 3600,
+  )
+end
+```
 
 ## Development
 
