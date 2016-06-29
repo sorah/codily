@@ -126,7 +126,14 @@ module Codily
       def force_integer!(*keys)
         keys.each do |k|
           if @hash[k]
-            @hash[k] = @hash[k].to_i
+            @hash[k] = case @hash[k]
+                       when true
+                         1
+                       when false
+                         0
+                       else
+                         @hash[k].to_i
+                       end
           end
         end
       end
