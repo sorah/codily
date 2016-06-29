@@ -54,15 +54,6 @@ service "test.example.com" do
 
   dictionary "name"
 
-  director "name" do
-    type 2
-    retries 5
-    quorum 75
-    comment "comment"
-
-    backend "backend-a"
-  end
-
   domain "a.example.org"
   domain "b.example.org" do
     comment "comment"

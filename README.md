@@ -73,17 +73,6 @@ service "test.example.com" do
 
   dictionary "name"
 
-  director "name" do
-    type
-    retries
-    quorum
-    comment
-
-    backend "name"
-    backend "name"
-    backend "name"
-  end
-
   domain "a.example.org"
   domain "a.example.org" do
     comment ""
@@ -160,6 +149,10 @@ service "test.example.com" do
   )
 end
 ```
+
+## Restrictions
+
+- Directors are not supported due to its deprecation
 
 ## Development
 

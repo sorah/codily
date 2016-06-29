@@ -3,7 +3,6 @@ require 'codily/elements/backend'
 require 'codily/elements/cache_setting'
 require 'codily/elements/condition'
 require 'codily/elements/dictionary'
-require 'codily/elements/director'
 require 'codily/elements/domain'
 require 'codily/elements/gzip'
 require 'codily/elements/header'
@@ -44,10 +43,6 @@ module Codily
 
       def dictionary(name, &block)
         root.add_element Dictionary.new(root, {name: name, _service_name: self.name}, &block)
-      end
-
-      def director(name, &block)
-        root.add_element Director.new(root, {name: name, _service_name: self.name}, &block)
       end
 
       def domain(name, &block)
