@@ -17,6 +17,21 @@ module Codily
         window
       )
 
+      defaults(
+        threshold: 1,
+        window: 2,
+        http_version: "1.1",
+        timeout: 5000,
+        method: "HEAD",
+        expected_response: 200,
+        check_interval: 60000,
+        initial: 1,
+      )
+
+      def setup
+        delete_if_empty! :comment
+      end
+
       def fastly_class
         Fastly::Healthcheck
       end

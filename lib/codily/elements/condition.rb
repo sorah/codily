@@ -9,6 +9,10 @@ module Codily
         statement
       )
 
+      def type(obj = nil)
+        getset :type, obj.to_s.upcase
+      end
+
       def fastly_class
         Fastly::Condition
       end

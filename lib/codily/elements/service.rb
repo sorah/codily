@@ -16,6 +16,12 @@ require 'codily/elements/settings'
 module Codily
   module Elements
     class Service < Base
+      def setup
+        @hash.delete :customer_id
+        @hash.delete :versions
+        delete_if_empty! :comment
+      end
+
       def name(name = nil)
         getset :name, name
       end

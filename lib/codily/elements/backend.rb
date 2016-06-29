@@ -8,6 +8,28 @@ module Codily
     class Backend < ServiceBelonggingBase
       include FileLoadable
 
+      defaults(
+        port: 80,
+        weight: 100,
+        auto_loadbalance: true,
+        between_bytes_timeout: 10000,
+        connect_timeout: 1000,
+        error_threshold: 0,
+        first_byte_timeout: 15000,
+        ssl_check_cert: true,
+      )
+
+      def setup
+        delete_if_empty!(*%i(
+          hostname
+          address
+          request_condition
+          healthcheck
+          comment
+          shield
+        ))
+      end
+
       def_attr *%i(
         address
         auto_loadbalance

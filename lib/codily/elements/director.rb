@@ -12,6 +12,17 @@ module Codily
         comment
       )
 
+      defaults(
+        retries: 5,
+        capacity: 100,
+        type: 1,
+        quorum: 75,
+      )
+
+      def setup
+        delete_if_empty! :comment
+      end
+
       def backend(name, &block)
         backend = refer_element(Backend, {name: name, _service_name: self.service_name}, :name, &block)
         root.add_element DirectorBackend.new(root, director_name: name, backend_name: backend.name, _service_name: self.service_name)

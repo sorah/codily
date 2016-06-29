@@ -1,4 +1,5 @@
 require 'fastly'
+require 'codily/utils'
 
 module Codily
   module Elements
@@ -13,6 +14,14 @@ module Codily
         end
       end
 
+      def self.defaults(kv = nil)
+        if kv
+          @defaults = defaults.merge(kv)
+        else
+          @defaults ||= {}
+        end
+      end
+
       def initialize(root, obj, &block)
         @root = root
 
@@ -20,7 +29,13 @@ module Codily
         when Hash
           @hash = obj
         when Fastly::Base
-          @hash = obj.as_hash
+          @fastly_obj = obj
+          @hash = Utils.symbolize_keys(obj.as_hash)
+
+          @hash.delete :id
+          @hash.each_key do |k|
+            @hash.delete k if @hash[k].nil?
+          end
         else
           raise TypeError
         end
@@ -31,6 +46,11 @@ module Codily
       end
 
       attr_reader :root
+      attr_accessor :fastly_obj
+
+      def id
+        fastly_obj && fastly_obj.id
+      end
 
       def name(str = nil)
         getset :name, str
@@ -41,7 +61,7 @@ module Codily
       end
 
       def as_hash
-        @hash
+        self.class.defaults.merge @hash
       end
 
       private
@@ -93,6 +113,22 @@ module Codily
       end
 
       def setup
+      end
+
+      private
+
+      def delete_if_empty!(*keys)
+        keys.each do |k|
+          @hash.delete k if @hash[k] && @hash[k].empty?
+        end
+      end
+
+      def force_integer!(*keys)
+        keys.each do |k|
+          if @hash[k]
+            @hash[k] = @hash[k].to_i
+          end
+        end
       end
     end
   end

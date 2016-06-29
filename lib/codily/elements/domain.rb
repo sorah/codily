@@ -7,6 +7,10 @@ module Codily
         comment
       )
 
+      def setup
+        delete_if_empty! :comment
+      end
+
       def fastly_class
         Fastly::Domain
       end
