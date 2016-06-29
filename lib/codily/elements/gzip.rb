@@ -25,7 +25,7 @@ module Codily
             when Array
               o.join(' ')
             end
-        getset :content_types, o
+        getset :extensions, o
       end
 
       def setup
