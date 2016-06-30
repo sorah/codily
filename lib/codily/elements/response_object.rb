@@ -44,7 +44,7 @@ module Codily
       end
 
       def fastly_class
-        Fastly::Cache
+        Fastly::ResponseObject
       end
     end
   end
