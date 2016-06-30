@@ -52,7 +52,7 @@ module Codily
 
 
     def add_element(element)
-      h = (@elements[element.class.name] ||= {})
+      h = (@elements[element.class] ||= {})
       raise AlreadyDefined, "#{element.class.name}(#{element.key}) is already defined: (#{h.keys.inspect})" if h.key?(element.key)
       if debug
         puts "DEBUG: #{self.class}/#{'%x' % self.__id__}(add_element): #{element.class}(#{element.key.inspect}) #{element.as_hash.inspect}"
@@ -60,14 +60,8 @@ module Codily
       h[element.key] = element
     end
 
-    def list_element(klass_or_name)
-      key = case klass_or_name
-            when Class
-              klass_or_name.name
-            when String
-              klass_or_name
-            end
-      @elements[key] ||= {}
+    def list_element(klass)
+      @elements[klass] ||= {}
     end
 
     def find_element(element)
