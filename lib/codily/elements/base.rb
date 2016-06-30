@@ -92,7 +92,7 @@ module Codily
       end
 
       def id
-        fastly_obj && fastly_obj.id
+        fastly_obj && fastly_obj.respond_to?(:id) ? fastly_obj.id : nil
       end
 
       def name(str = nil)
