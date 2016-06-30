@@ -20,9 +20,9 @@ require 'codily/elements/settings'
 
 module Codily
   class Importer
-    def initialize(fastly, export_targets: {})
+    def initialize(fastly, import_targets: {})
       @fastly = fastly
-      @export_targets = export_targets
+      @import_targets = import_targets
 
       @ran = false
       @root = Codily::Root.new(debug: true)
@@ -35,23 +35,23 @@ module Codily
 
       fastly.list_services.each do |service|
         service_version = root.service_version_set(service.name, service.id, service.versions)
-        export_version = @export_targets[service.id] || @export_targets[service.name] || service_version[:dev]
+        import_version = @import_targets[service.id] || @import_targets[service.name] || service_version[:dev]
 
         root.add_element Elements::Service.new(root, service)
 
         threads = {
-          Elements::Backend => proc { fastly.list_backends(service_id: service.id, version: export_version) },
-          Elements::CacheSetting => proc { fastly.list_cache_settings(service_id: service.id, version: export_version) },
-          Elements::Condition => proc { fastly.list_conditions(service_id: service.id, version: export_version) },
-          Elements::Dictionary => proc { fastly.list_dictionaries(service_id: service.id, version: export_version) },
-          Elements::Domain => proc { fastly.list_domains(service_id: service.id, version: export_version) },
-          Elements::Gzip => proc { fastly.list_gzips(service_id: service.id, version: export_version) },
-          Elements::Header => proc { fastly.list_headers(service_id: service.id, version: export_version) },
-          Elements::Healthcheck => proc { fastly.list_healthchecks(service_id: service.id, version: export_version) },
-          Elements::RequestSetting => proc { fastly.list_request_settings(service_id: service.id, version: export_version) },
-          Elements::ResponseObject => proc { fastly.list_response_objects(service_id: service.id, version: export_version) },
-          Elements::Vcl => proc { fastly.list_vcls(service_id: service.id, version: export_version) },
-          Elements::Settings => proc { [fastly.get_settings(service.id, export_version)] },
+          Elements::Backend => proc { fastly.list_backends(service_id: service.id, version: import_version) },
+          Elements::CacheSetting => proc { fastly.list_cache_settings(service_id: service.id, version: import_version) },
+          Elements::Condition => proc { fastly.list_conditions(service_id: service.id, version: import_version) },
+          Elements::Dictionary => proc { fastly.list_dictionaries(service_id: service.id, version: import_version) },
+          Elements::Domain => proc { fastly.list_domains(service_id: service.id, version: import_version) },
+          Elements::Gzip => proc { fastly.list_gzips(service_id: service.id, version: import_version) },
+          Elements::Header => proc { fastly.list_headers(service_id: service.id, version: import_version) },
+          Elements::Healthcheck => proc { fastly.list_healthchecks(service_id: service.id, version: import_version) },
+          Elements::RequestSetting => proc { fastly.list_request_settings(service_id: service.id, version: import_version) },
+          Elements::ResponseObject => proc { fastly.list_response_objects(service_id: service.id, version: import_version) },
+          Elements::Vcl => proc { fastly.list_vcls(service_id: service.id, version: import_version) },
+          Elements::Settings => proc { [fastly.get_settings(service.id, import_version)] },
         }.map do |k, list_proc|
           Thread.new(k) do |klass|
             list_proc.call.map do |_|
