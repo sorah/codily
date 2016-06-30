@@ -9,6 +9,15 @@ module Codily
         statement
       )
 
+      def setup
+        delete_if_empty! *%i(
+          comment
+        )
+        force_integer! *%i(
+          priority
+        )
+      end
+
       def type(obj = nil)
         getset :type, obj.to_s.upcase
       end
