@@ -89,8 +89,3 @@ module Codily
     end
   end
 end
-
-if __FILE__ == $0
-  fastly = Fastly.new(api_key: ENV['FASTLY_API_KEY'])
-  Codily::Importer.new(fastly).run
-end
