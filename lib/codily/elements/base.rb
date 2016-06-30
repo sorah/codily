@@ -6,6 +6,23 @@ module Codily
     class Base
       class AlreadyDefined < StandardError; end
 
+      def self.parent_class
+        nil
+      end
+
+      def self.path
+        @path ||= [].tap do |path|
+          ptr = self
+          while ptr = ptr.parent_class
+            path.unshift ptr
+          end
+        end
+      end
+
+      def self.name_for_attr
+        @attr_name ||= self.name.split('::').last.gsub(/[A-Z]/, '_\0').gsub(/^_/, '').downcase
+      end
+
       def self.def_attr(*attrs)
         attrs.each do |attr|
           define_method(attr) do |obj = nil|
@@ -48,6 +65,32 @@ module Codily
       attr_reader :root
       attr_accessor :fastly_obj
 
+      def inspect
+        "#<#{self.class}:#{self.key.inspect}/#{self.as_hash.inspect}>"
+      end
+
+      def parent_class
+        self.class.parent_class
+      end
+
+      def parent_key
+        nil
+      end
+
+      def parent
+        return nil if parent_class.nil?
+        root.list_element(parent_class)[parent_key] or raise '[bug?] no parent element'
+      end
+
+      def parents
+        parents = []
+        ptr = self
+        while ptr = ptr.parent
+          parents.unshift ptr
+        end
+        return parents
+      end
+
       def id
         fastly_obj && fastly_obj.id
       end
@@ -56,12 +99,22 @@ module Codily
         getset :name, str
       end
 
+      def dsl_args
+        [name]
+      end
+
       def key
         name
       end
 
       def as_hash
         self.class.defaults.merge @hash
+      end
+
+      def as_dsl_hash
+        as_hash.tap do |x|
+          x.delete :name
+        end
       end
 
       private

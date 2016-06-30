@@ -16,6 +16,14 @@ module Codily
     attr_reader :elements
     attr_accessor :debug
 
+    def as_hash
+      {}
+    end
+
+    def as_dsl_hash
+      as_hash
+    end
+
     # XXX: is it okay having this here?
     def service_version_set(service_name, service_id, versions)
       @service_map_name_to_id[service_name] = service_id

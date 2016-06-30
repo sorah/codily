@@ -1,5 +1,6 @@
 require 'fastly'
 require 'codily/elements/base'
+require 'codily/elements/service'
 
 module Codily
   module Elements
@@ -13,6 +14,14 @@ module Codily
           @hash[:_service_name] = service_version[:name]
           @hash[:_service_id] = service_version[:id]
         end
+      end
+
+      def self.parent_class
+        Service
+      end
+
+      def parent_key
+        service_name
       end
 
       def service_id
