@@ -30,6 +30,7 @@ module Codily
         delete_if_empty! *%i(
           default_host
           hash_keys
+          request_condition
         )
 
         force_integer! *%i(
