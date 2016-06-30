@@ -151,7 +151,7 @@ module Codily
     def filter_elements(elems)
       elems.select do |e|
         if e.parent_class == Elements::Service
-          @service_filter.any? { |_| _ === e.service_name } && present_service_names.include?(e.service_name)
+          (@service_filter ? @service_filter.any? { |_| _ === e.service_name } : true) && present_service_names.include?(e.service_name)
         else
           true
         end
