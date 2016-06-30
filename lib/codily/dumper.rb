@@ -1,3 +1,5 @@
+require 'codily/elements/condition'
+
 module Codily
   class Dumper
     def initialize(root)
@@ -16,8 +18,9 @@ module Codily
       #           KEY:
       #             :self: Elements::Base
       @tree ||= {self: root, children: {}}.tap do |tree|
-        root.elements.each_key.sort_by { |klass| klass.path.size }.each do |klass|
+        root.elements.each_key.sort_by { |klass| [klass.path.size, klass == Elements::Condition ? 0 : 1] }.each do |klass|
           elements = root.list_element(klass)
+
           elements.each do |key, element|
             parents = element.parents
             subtree = parents.inject(tree) { |r,i| r[:children][i.class.name_for_attr][i.key] }
