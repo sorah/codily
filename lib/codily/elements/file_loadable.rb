@@ -17,8 +17,6 @@ module Codily
 
       def file_loadable(obj)
         case obj
-        when String
-          return obj
         when Hash
           if obj.key?(:inline)
             return obj[:inline]
@@ -27,6 +25,8 @@ module Codily
             return File.read(obj[:file])
           end
           raise ArgumentError
+        else
+          return obj.to_s
         end
       end
     end
