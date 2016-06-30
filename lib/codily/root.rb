@@ -75,5 +75,9 @@ module Codily
     def find_element(element)
       list_element(element.class)[element.key]
     end
+
+    def all_elements
+      @elements.each_value.flat_map(&:values)
+    end
   end
 end
