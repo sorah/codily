@@ -1,6 +1,8 @@
 # Codily: Codificate your Fastly configuration
 
-__still not working, this is in active development phase__
+__still in beta__
+
+Codily allows you to manage your Fastly configuration in Ruby DSL!
 
 ## Installation
 
@@ -11,11 +13,108 @@ gem 'codily'
 
 Or install it yourself as:
 
-    $ gem install codily
+    $ gem install codily --pre
 
 ## Usage
 
-planning
+
+```
+Usage: codily [options]
+    -a, --apply
+    -e, --export
+    -v, --version
+    -f, --file PATH                  file to apply, or file path to save exported file (default to ./codily.rb on applying)
+    -t, --target REGEXP              Filter services by name to apply or export.
+    -n, --dry-run                    Just displays the oprerations that would be performed, without actually running them.
+    -D, --debug                      Debug mode
+    -V, --target-version SVC_VER     Choose version to export (format= service_name:version) This option can be used multiple time.
+```
+
+```
+codily --help
+
+codily --export
+codily --export --target my-service
+codily --export --target my-service --target-version my-service:42
+codily --export --file ./codily.rb
+
+codily --apply --file ./codily.rb
+codily --apply --file ./codily.rb --dry-run
+codily --apply --file ./codily.rb --target my-service
+```
+
+## Restrictions
+
+- Directors are not supported due to its deprecation
+
+## DSL
+
+### tl;dr
+
+It's easy to start by export existing configuration into DSL using `--export` option.
+
+``` ruby
+service "foo" do
+  backend "my backend" do
+    address "example.com"
+  end
+end
+```
+
+### Loading file
+
+some attributes (e.g. tls certificates, tls keys, VCL content, response object content) supports loading value from a file.
+
+``` ruby
+service "foo" do
+  vcl "default" do
+    main true
+    content file: './my.vcl'
+  end
+end
+```
+
+### Referring other object (e.g. condition)
+
+Some attributes that refers other object (e.g. conditions), you can define referring object as like the following:
+
+``` ruby
+service "foo" do
+  response_object "method not allowed" do
+    status "405"
+    response "Method Not Allowed"
+    content "405"
+    content_type "text/plain"
+
+    request_condition "request method is not GET, HEAD or FASTLYPURGE" do
+      priority 10
+      statement '!(req.request == "GET" || req.request == "HEAD" || req.request == "FASTLYPURGE")'
+    end
+  end
+end
+
+# equals as follows:
+
+service "foo" do
+  condition "request method is not GET, HEAD or FASTLYPURGE" do
+    priority 10
+    statement '!(req.request == "GET" || req.request == "HEAD" || req.request == "FASTLYPURGE")'
+    type "REQUEST"
+  end
+
+  response_object "method not allowed" do
+    status "405"
+    response "Method Not Allowed"
+    content "405"
+    content_type "text/plain"
+    request_condition "request method is not GET, HEAD or FASTLYPURGE"
+  end
+end
+```
+
+### Full example
+
+Basically, all attributes are 
 
 ``` ruby
 service "test.example.com" do
@@ -30,9 +129,6 @@ service "test.example.com" do
     first_byte_timeout
     healthcheck
     hostname
-    ipv4
-    ipv6
-    locked
     max_conn
     max_tls_version
     min_tls_version
@@ -145,14 +241,10 @@ service "test.example.com" do
   end
 
   settings(
-    "general.default_ttl" => 3600,
+    "general.default_ttl": 3600,
   )
 end
 ```
-
-## Restrictions
-
-- Directors are not supported due to its deprecation
 
 ## Development
 
@@ -162,7 +254,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/codily.
+Bug reports and pull requests are welcome on GitHub at https://github.com/sorah/codily.
 
 
 ## License
