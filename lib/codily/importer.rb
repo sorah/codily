@@ -39,48 +39,29 @@ module Codily
 
         root.add_element Elements::Service.new(root, service)
 
-        fastly.list_backends(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::Backend.new(root, _)
+        threads = {
+          Elements::Backend => proc { fastly.list_backends(service_id: service.id, version: export_version) },
+          Elements::CacheSetting => proc { fastly.list_cache_settings(service_id: service.id, version: export_version) },
+          Elements::Condition => proc { fastly.list_conditions(service_id: service.id, version: export_version) },
+          Elements::Dictionary => proc { fastly.list_dictionaries(service_id: service.id, version: export_version) },
+          Elements::Domain => proc { fastly.list_domains(service_id: service.id, version: export_version) },
+          Elements::Gzip => proc { fastly.list_gzips(service_id: service.id, version: export_version) },
+          Elements::Header => proc { fastly.list_headers(service_id: service.id, version: export_version) },
+          Elements::Healthcheck => proc { fastly.list_healthchecks(service_id: service.id, version: export_version) },
+          Elements::RequestSetting => proc { fastly.list_request_settings(service_id: service.id, version: export_version) },
+          Elements::ResponseObject => proc { fastly.list_response_objects(service_id: service.id, version: export_version) },
+          Elements::Vcl => proc { fastly.list_vcls(service_id: service.id, version: export_version) },
+        }.map do |k, list_proc|
+          Thread.new(k) do |klass|
+            list_proc.call.map do |_|
+              klass.new(root, _)
+            end
+          end
         end
 
-        fastly.list_cache_settings(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::CacheSetting.new(root, _)
-        end
-
-        fastly.list_conditions(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::Condition.new(root, _)
-        end
-
-        fastly.list_dictionaries(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::Dictionary.new(root, _)
-        end
-
-        fastly.list_domains(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::Domain.new(root, _)
-        end
-
-        fastly.list_gzips(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::Gzip.new(root, _)
-        end
-
-        fastly.list_headers(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::Header.new(root, _)
-        end
-
-        fastly.list_healthchecks(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::Healthcheck.new(root, _)
-        end
-
-        fastly.list_request_settings(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::RequestSetting.new(root, _)
-        end
-
-        fastly.list_response_objects(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::ResponseObject.new(root, _)
-        end
-
-        fastly.list_vcls(service_id: service.id, version: export_version).each do |_|
-          root.add_element Elements::Vcl.new(root, _)
+        threads.each(&:value)
+        threads.flat_map(&:value).each do |elem|
+          root.add_element elem
         end
       end
 
