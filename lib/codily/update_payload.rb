@@ -10,6 +10,8 @@ module Codily
 
     attr_accessor :id, :service_id, :version_number, :name, :hash
 
+    alias version version_number
+
     def as_hash
       @hash
     end
