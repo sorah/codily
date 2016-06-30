@@ -20,9 +20,10 @@ require 'codily/elements/settings'
 
 module Codily
   class Importer
-    def initialize(fastly, import_targets: {})
+    def initialize(fastly, import_targets: {}, service_filter: nil)
       @fastly = fastly
       @import_targets = import_targets
+      @service_filter = service_filter
 
       @ran = false
       @root = Codily::Root.new(debug: true)
@@ -34,6 +35,9 @@ module Codily
       return self if @ran
 
       fastly.list_services.each do |service|
+        if @service_filter
+          next unless @service_filter.any? { |_| _ === service.name }
+        end
         service_version = root.service_version_set(service.name, service.id, service.versions)
         import_version = @import_targets[service.id] || @import_targets[service.name] || service_version[:dev]
 
