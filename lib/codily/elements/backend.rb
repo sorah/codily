@@ -50,6 +50,7 @@ module Codily
         ssl_ciphers
         ssl_hostname
         ssl_sni_hostname
+        ssl_check_cert
         use_ssl
         weight
       )
@@ -57,7 +58,6 @@ module Codily
       def_file_loadable_attr *%i(
         client_cert
         ssl_ca_cert
-        ssl_check_cert
         ssl_client_cert
         ssl_client_key
       )
