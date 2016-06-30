@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+require 'codily'
+
+$stdout.sync = true
+
+exit Codily::Cli.new(ARGV).run || 128

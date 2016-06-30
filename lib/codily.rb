@@ -1,5 +1,6 @@
-require "codily/version"
+require 'codily/version'
+require 'codily/cli'
+require 'codily/importer'
+require 'codily/dumper'
+require 'codily/engine'
 
-module Codily
-  # Your code goes here...
-end
