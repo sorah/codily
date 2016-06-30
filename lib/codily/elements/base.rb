@@ -66,7 +66,7 @@ module Codily
       attr_accessor :fastly_obj
 
       def inspect
-        "#<#{self.class}:#{self.key.inspect}/#{self.as_hash.inspect}>"
+        "#<#{self.class}:#{self.key.inspect}/#{Hash[self.as_hash.to_a.sort_by{ |_| _.first.to_s }]}>"
       end
 
       def parent_class
