@@ -56,8 +56,16 @@ module Codily
         act_any = act = true
         puts "CREATE: #{new_element.inspect}"
 
+        hash = new_element.as_hash
+
+        if new_element.parent_class == Elements::Service
+          service_version = present.service_version_get(new_element.service_name)
+          hash[:service_id] = service_version[:id]
+          hash[:version] = service_version[:dev]
+        end
+
         unless dry_run
-          fastly.create(new_element.fastly_class, new_element)
+          fastly.create(new_element.fastly_class, hash)
         end
       end
 
