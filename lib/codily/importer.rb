@@ -51,6 +51,7 @@ module Codily
           Elements::RequestSetting => proc { fastly.list_request_settings(service_id: service.id, version: export_version) },
           Elements::ResponseObject => proc { fastly.list_response_objects(service_id: service.id, version: export_version) },
           Elements::Vcl => proc { fastly.list_vcls(service_id: service.id, version: export_version) },
+          Elements::Settings => proc { [fastly.get_settings(service.id, export_version)] },
         }.map do |k, list_proc|
           Thread.new(k) do |klass|
             list_proc.call.map do |_|

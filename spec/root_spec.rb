@@ -161,4 +161,17 @@ end
       expect(subject.list_element(Codily::Elements::Condition)[%w(test condition-b)].statement).to eq 'beresp.status == 201'
     end
   end
+
+  describe "settings" do
+    subject { described_class.new.run_string(<<-'EOS', "(eval:#{__FILE__})", __LINE__.succ) }
+service "test" do
+  settings "foo" => 'bar'
+end
+    EOS
+
+    specify do
+      expect(subject.list_element(Codily::Elements::Settings)['test']).to be_a(Codily::Elements::Settings)
+      expect(subject.list_element(Codily::Elements::Settings)['test'].as_hash).to eq(foo: 'bar')
+    end
+  end
 end

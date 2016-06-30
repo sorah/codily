@@ -74,7 +74,7 @@ module Codily
       end
       
       def settings(kv)
-        root.add_element Settings.new(root, {settings: kv, _service_name: self.name})
+        root.add_element Settings.new(root, {_service_name: self.name}.merge(kv))
       end
 
       def fastly_class

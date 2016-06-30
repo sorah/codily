@@ -55,7 +55,11 @@ module Codily
 
       attrs =tree[:self].as_dsl_hash
       attrs.each do |key, value|
-        lines << "#{indent}#{key} #{value.inspect}"
+        value_str = value.inspect
+        if value.kind_of?(Hash)
+          value_str = value_str.gsub(/\A{|}\z/, '')
+        end
+        lines << "#{indent}#{key} #{value_str}"
       end
 
       lines << nil if !attrs.empty? && !tree[:children].empty?
@@ -64,13 +68,19 @@ module Codily
         lines << nil if i > 0
         children.each_with_index do |(key, child), j|
           lines << nil if j > 0
-          lines << "#{indent}#{name} #{child[:self].dsl_args.map(&:inspect).join(?,)} do"
+
+          value_str = child[:self].dsl_args.map(&:inspect).join(?,)
+          if child[:self].dsl_args.size == 1 && child[:self].dsl_args[0].kind_of?(Hash)
+            value_str = value_str.gsub(/\A{|}\z/, '')
+          end
+
+          lines << "#{indent}#{name} #{value_str} do"
           lines << dump_ruby_code(child, level.succ)
           lines << "#{indent}end"
         end
       end
 
-      lines.join("\n")
+      lines.join("\n").gsub(/ do\n\n\s+end/,'')
     end
   end
 end
