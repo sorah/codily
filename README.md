@@ -43,6 +43,8 @@ codily --apply --file ./codily.rb --dry-run
 codily --apply --file ./codily.rb --target my-service
 ```
 
+You have to set api key in environment variable `FASTLY_API_KEY`
+
 ## Restrictions
 
 - Directors are not supported due to its deprecation
