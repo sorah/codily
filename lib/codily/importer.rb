@@ -20,13 +20,13 @@ require 'codily/elements/settings'
 
 module Codily
   class Importer
-    def initialize(fastly, import_targets: {}, service_filter: nil)
+    def initialize(fastly, import_targets: {}, service_filter: nil, debug: false)
       @fastly = fastly
       @import_targets = import_targets
       @service_filter = service_filter
 
       @ran = false
-      @root = Codily::Root.new(debug: true)
+      @root = Codily::Root.new(debug: debug)
     end
 
     attr_reader :fastly, :root
