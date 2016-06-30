@@ -19,7 +19,7 @@ require 'codily/elements/vcl'
 require 'codily/elements/settings'
 
 module Codily
-  class Exporter
+  class Importer
     def initialize(fastly, export_targets: {})
       @fastly = fastly
       @export_targets = export_targets
@@ -92,5 +92,5 @@ end
 
 if __FILE__ == $0
   fastly = Fastly.new(api_key: ENV['FASTLY_API_KEY'])
-  Codily::Exporter.new(fastly).run
+  Codily::Importer.new(fastly).run
 end
