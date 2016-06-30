@@ -65,7 +65,11 @@ module Codily
         end
 
         unless dry_run
-          fastly.create(new_element.fastly_class, hash)
+          new_obj = fastly.create(new_element.fastly_class, hash)
+
+          if new_element.class == Elements::Service
+            present.service_version_set(new_obj.name, new_obj.id, new_obj.versions)
+          end
         end
       end
 
