@@ -5,15 +5,17 @@ module Codily
   class Root
     class AlreadyDefined < StandardError; end
 
-    def initialize(debug: false)
+    def initialize(debug: false, service_filter: nil)
       @debug = debug
       @elements = {}
 
+      @service_filter = service_filter
       @service_versions = {}
       @service_map_name_to_id = {}
     end
 
     attr_reader :elements
+    attr_reader :service_filter
     attr_accessor :debug
 
     def as_hash
@@ -41,6 +43,10 @@ module Codily
     end
 
     def service(name, &block)
+      if service_filter
+        return nil unless service_filter.any? { |_| _ === name }
+      end
+
       raise AlreadyDefined if services.key?(name)
       add_element(Elements::Service.new(self, {name: name}, &block))
     end

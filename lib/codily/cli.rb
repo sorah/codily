@@ -40,7 +40,7 @@ module Codily
       Dir.chdir(File.dirname(options[:file]))
 
       present = importer.run.root
-      desired = Root.new(debug: options[:debug]).run_string(File.read(File.basename(options[:file])), options[:file], 1)
+      desired = Root.new(debug: options[:debug], service_filter: options[:target]).run_string(File.read(File.basename(options[:file])), options[:file], 1)
 
       require_fastly_auth!
 
