@@ -39,7 +39,7 @@ module Codily
           next unless @service_filter.any? { |_| _ === service.name }
         end
         service_version = root.service_version_set(service.name, service.id, service.versions)
-        import_version = @import_targets[service.id] || @import_targets[service.name] || service_version[:dev]
+        import_version = @import_targets[service.id] || @import_targets[service.name] || service_version[:dev] || service_version[:active]
 
         root.add_element Elements::Service.new(root, service)
 

@@ -16,6 +16,7 @@ module Codily
 
     attr_reader :elements
     attr_reader :service_filter
+    attr_reader :service_versions
     attr_accessor :debug
 
     def as_hash
@@ -29,7 +30,8 @@ module Codily
     # XXX: is it okay having this here?
     def service_version_set(service_name, service_id, versions)
       @service_map_name_to_id[service_name] = service_id
-      dev = versions.reverse_each.find { |_| !_.locked }.number
+      dev_version = versions.reverse_each.find { |_| !_.locked }
+      dev = dev_version && dev_version.number
       active = (versions.reverse_each.find(&:active) || versions.reverse_each.find(&:locked)).number
       @service_versions[service_id] = {dev: dev, active: active, name: service_name, id: service_id}
     end

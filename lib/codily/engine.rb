@@ -52,6 +52,17 @@ module Codily
       act_any = false
       act = false
 
+      present.service_versions.each do |id, version|
+        if !version[:dev]
+          puts "CLONE VERSION: #{version[:name]}.#{version[:active]}"
+          if !dry_run
+            version[:dev] = fastly.get_version(id, version[:active]).clone.number
+          end
+        end
+      end
+
+      puts
+
       creations.each do |new_element|
         act_any = act = true
         puts "CREATE: #{new_element.inspect}"
