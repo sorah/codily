@@ -50,9 +50,6 @@ module Codily
         puts
       end
 
-      act_any = false
-      act = false
-
       affected_services.each do |key|
         version = present.service_version_get(key)
         if !version[:dev]
@@ -66,7 +63,6 @@ module Codily
       puts
 
       creations.each do |new_element|
-        act_any = act = true
         puts "CREATE: #{new_element.inspect}"
 
         hash = new_element.as_hash
@@ -86,11 +82,7 @@ module Codily
         end
       end
 
-      puts if act
-      act = false
-
       updates.each do |present_elem, desired_elem|
-        act_any = act = true
         puts "UPDATE: - #{present_elem.inspect}"
         puts "        + #{desired_elem.inspect}"
 
@@ -106,17 +98,15 @@ module Codily
         end
       end
 
-      puts if act
-      act = false
-
       removals.each do |removed_element|
-        act_any = act = true
         puts "DELETE: #{removed_element.inspect}"
 
         unless dry_run
           removed_element.fastly_obj.delete!
         end
       end
+
+      act_any = !affected_services.empty?
 
       unless act_any
         puts "No difference."
