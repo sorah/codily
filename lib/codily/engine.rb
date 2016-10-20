@@ -52,11 +52,12 @@ module Codily
       act_any = false
       act = false
 
-      present.service_versions.each do |id, version|
+      affected_services.each do |key|
+        version = present.service_version_get(key)
         if !version[:dev]
           puts "CLONE VERSION: #{version[:name]}.#{version[:active]}"
           if !dry_run
-            version[:dev] = fastly.get_version(id, version[:active]).clone.number
+            version[:dev] = fastly.get_version(version[:id], version[:active]).clone.number
           end
         end
       end
@@ -147,6 +148,13 @@ module Codily
     def removals
       removed_keys = present_element_keys - desired_element_keys
       sort_elements(removed_keys.map{ |_| present.elements[_[0]][_[1]] })
+    end
+
+    def affected_services
+      [*creations, *removals, *updates.map(&:first)].
+        select { |_| _.parent_class == Elements::Service }.
+        map(&:parent_key).
+        uniq
     end
 
     private
