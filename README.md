@@ -27,7 +27,8 @@ Usage: codily [options]
     -t, --target REGEXP              Filter services by name to apply or export.
     -n, --dry-run                    Just displays the oprerations that would be performed, without actually running them.
     -D, --debug                      Debug mode
-    -V, --target-version SVC_VER     Choose version to export (format= service_name:version) This option can be used multiple time.
+    -A, --activate                   Activate after apply
+    -V, --target-version SVC_VER     Choose version to export (format= service_name:version) This option can be used multiple time..
 ```
 
 ```
@@ -39,6 +40,7 @@ codily --export --target my-service --target-version my-service:42
 codily --export --file ./codily.rb
 
 codily --apply --file ./codily.rb
+codily --apply --file ./codily.rb --activate
 codily --apply --file ./codily.rb --dry-run
 codily --apply --file ./codily.rb --target my-service
 ```

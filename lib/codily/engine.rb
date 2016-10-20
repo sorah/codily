@@ -17,15 +17,16 @@ require 'codily/elements/settings'
 
 module Codily
   class Engine
-    def initialize(fastly, present, desired, service_filter: nil)
+    def initialize(fastly, present, desired, service_filter: nil, activate: false)
       @fastly = fastly
       @present = present
       @desired = desired
 
       @service_filter = service_filter
+      @activate = activate
     end
 
-    attr_reader :fastly, :present, :desired, :service_filter
+    attr_reader :fastly, :present, :desired, :service_filter, :activate
 
     ORDER = [
       Elements::Service,
@@ -120,6 +121,19 @@ module Codily
       unless act_any
         puts "No difference."
       end
+
+      puts
+
+      if activate
+        affected_services.each do |id|
+          version = present.service_version_get(id)
+          puts "ACTIVATE VERSION: #{version[:name]}.#{version[:dev]}"
+          if !dry_run
+            fastly.get_version(version[:id], version[:dev]).activate!
+          end
+        end
+      end
+
       act_any
     end
 

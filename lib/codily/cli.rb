@@ -44,7 +44,7 @@ module Codily
 
       require_fastly_auth!
 
-      engine = Engine.new(fastly, present, desired, service_filter: options[:target])
+      engine = Engine.new(fastly, present, desired, service_filter: options[:target], activate: options[:activate])
 
       act = engine.run(dry_run: options[:dry_run])
 
@@ -108,9 +108,9 @@ module Codily
           options[:debug] = true
         end
 
-        #opt.on('-A', '--activate', "Activate after apply") do
-        #  options[:activate] = true
-        #end
+        opt.on('-A', '--activate', "Activate after apply") do
+          options[:activate] = true
+        end
 
         #opt.on('-d', '--diff', "Call diff API after apply") do
         #  options[:diff] = true
