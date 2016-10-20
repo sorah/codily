@@ -124,30 +124,36 @@ module Codily
     end
 
     def creations
-      new_keys = desired_element_keys - present_element_keys
-      sort_elements(new_keys.map{ |_| desired.elements[_[0]][_[1]] })
+      @creations ||= begin
+        new_keys = desired_element_keys - present_element_keys
+        sort_elements(new_keys.map{ |_| desired.elements[_[0]][_[1]] })
+      end
     end
 
     def updates
-      common = present_element_keys & desired_element_keys
+      @updates ||= begin
+        common = present_element_keys & desired_element_keys
 
-      present_existing = common.map{ |_| present.elements[_[0]][_[1]] }
-      desired_existing = common.map{ |_| desired.elements[_[0]][_[1]] }
+        present_existing = common.map{ |_| present.elements[_[0]][_[1]] }
+        desired_existing = common.map{ |_| desired.elements[_[0]][_[1]] }
 
-      raise '!?' if present_existing.size != desired_existing.size
+        raise '!?' if present_existing.size != desired_existing.size
 
-      present_existing.zip(desired_existing).map do |present_elem, desired_elem|
-        if present_elem.as_hash != desired_elem.as_hash
-          [present_elem, desired_elem]
-        else
-          nil
-        end
-      end.compact.sort_by { |_| ORDER.index(_[0].class) }
+        present_existing.zip(desired_existing).map do |present_elem, desired_elem|
+          if present_elem.as_hash != desired_elem.as_hash
+            [present_elem, desired_elem]
+          else
+            nil
+          end
+        end.compact.sort_by { |_| ORDER.index(_[0].class) }
+      end
     end
 
     def removals
-      removed_keys = present_element_keys - desired_element_keys
-      sort_elements(removed_keys.map{ |_| present.elements[_[0]][_[1]] })
+      @removals ||= begin
+        removed_keys = present_element_keys - desired_element_keys
+        sort_elements(removed_keys.map{ |_| present.elements[_[0]][_[1]] })
+      end
     end
 
     def affected_services
