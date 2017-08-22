@@ -29,6 +29,9 @@ module Codily
           cache_condition
           request_condition
         )
+        force_integer! *%i(
+          status
+        )
       end
 
       def content(obj = nil)
