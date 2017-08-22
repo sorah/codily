@@ -153,7 +153,9 @@ module Codily
         list = root.list_element(klass)
         element = klass.new(root, obj, &block)
         element_query = element.__send__(key2)
-        candidate = list.each_value.find { |_| _.__send__(key2) == element_query }
+        candidate = list.each_value.find { |_|
+          element_query == _.__send__(key2) && element.key == _.key
+        }
         if candidate
           if block
             raise AlreadyDefined
